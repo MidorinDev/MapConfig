@@ -1,50 +1,71 @@
 package io.zumyu.midorin.mapconfig;
 
-import io.zumyu.midorin.mapconfig.exception.GameExistException;
-import io.zumyu.midorin.mapconfig.map.Map;
+import io.zumyu.midorin.mapconfig.util.LogHelper;
+import org.bukkit.plugin.Plugin;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
+import java.util.logging.Level;
 
 public class MapConfig
 {
-   private final String gameName;
+   private final Plugin plugin;
    private final File mapFolder;
-   private final java.util.Map<String, Map> maps = new HashMap<>();
+   private final Map<String, io.zumyu.midorin.mapconfig.map.Map> maps = new TreeMap<>();
 
-   public MapConfig(String gameName)
+   public MapConfig(Plugin plugin)
    {
-      this.gameName = gameName;
-      mapFolder = new File(MapConfigPlugin.getInstance().getDataFolder() + "/" + this.gameName + "/map");
-      mapFolder.mkdirs();
+      this.plugin = plugin;
+      mapFolder = new File(plugin.getDataFolder() + "/map");
+      if (!mapFolder.exists()) mapFolder.mkdirs();
+      loadMapConfigs();
    }
 
    /**
-    * ゲーム名取得
-    * @return gameName
+    * マップ取得
+    * @param mapName マップ名
+    * @return map
     */
-   public String getGameName()
-   {
-      return gameName;
-   }
-
-   public File getMapFolder()
-   {
-      return mapFolder;
-   }
-
-   public Map getMap(String mapName)
+   public io.zumyu.midorin.mapconfig.map.Map getMap(String mapName)
    {
       return maps.get(mapName);
    }
 
-   private void loadConfigs()
+   /**
+    * ロード済みのマップをすべて取得
+    * @return maps
+    */
+   public Map getMaps()
    {
-      for (File config : mapFolder.listFiles())
-      {
+      return maps;
+   }
 
+   /**
+    * フォルダー内のymlファイルを読み込む
+    */
+   private void loadMapConfigs()
+   {
+      LogHelper.log(Level.INFO, "-----------[ " + plugin.getName() + " ]-----------");
+
+      for (File file : Objects.requireNonNull(mapFolder.listFiles()))
+      {
+         if (file.getName().endsWith(".yml"))
+         {
+            LogHelper.log(Level.INFO, "Found: " + file.getName());
+            io.zumyu.midorin.mapconfig.map.Map map = null;
+            try
+            {
+               map = new io.zumyu.midorin.mapconfig.map.Map(file);
+               maps.put(map.getMapName(), map);
+            }
+            catch (Exception e)
+            {
+               LogHelper.log(Level.INFO, "Failed: " + file.getName());
+               e.printStackTrace();
+            }
+         }
       }
+      LogHelper.log(Level.INFO, "Loaded: " + maps.keySet().toString());
+      LogHelper.log(Level.INFO, "---------------------------------------");
    }
 }
