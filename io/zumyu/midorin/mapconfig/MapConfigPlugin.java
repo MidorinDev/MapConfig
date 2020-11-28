@@ -1,6 +1,6 @@
 package io.zumyu.midorin.mapconfig;
 
-import io.zumyu.midorin.mapconfig.util.Logger;
+import io.zumyu.midorin.mapconfig.util.LogHelper;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.logging.Level;
@@ -12,12 +12,12 @@ public class MapConfigPlugin extends JavaPlugin
    public void onEnable()
    {
       instance = this;
-      Logger.log(Level.INFO, getInstance().getName() + "started");
+      LogHelper.log(Level.INFO, getInstance().getName() + " enabled");
    }
 
    public void onDisable()
    {
-
+      LogHelper.log(Level.INFO, getInstance().getName() + " disabled");
    }
 
    /**
