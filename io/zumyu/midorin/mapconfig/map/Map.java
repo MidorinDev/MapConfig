@@ -11,21 +11,19 @@ import java.util.*;
 
 public class Map
 {
-   private final File mapFile;
+   private File mapFile;
    private String mapName;
    private String worldName;
    private Location worldSpawnPoint;
    private List<String> teams;
    private java.util.Map<String, Location> teamSpawnPoints;
 
-//   public Map(File mapFile) throws MapConfigException
    public Map(File mapFile)
    {
-      this.mapFile = mapFile;
-
       if (mapFile.exists() & mapFile.getName().endsWith(".yml"))
       {
-         final FileConfiguration mapFileConfig = YamlConfiguration.loadConfiguration(mapFile);
+         this.mapFile = mapFile;
+         final FileConfiguration mapFileConfig = YamlConfiguration.loadConfiguration(this.mapFile);
 
          mapName = mapFileConfig.getString("mapName");
          worldSpawnPoint = (Location) mapFileConfig.get("worldSpawnPoint");
