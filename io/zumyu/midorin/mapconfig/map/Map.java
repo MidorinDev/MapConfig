@@ -18,7 +18,6 @@ public class Map
    private List<String> teams;
    private java.util.Map<String, Location> teamSpawnPoints;
 
-//   public Map(File mapFile) throws MapConfigException
    public Map(File mapFile)
    {
       this.mapFile = mapFile;
